@@ -1,0 +1,40 @@
+<svg viewBox="0 0 138.704 103.925" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="138.703613" height="103.924530" fill="none" customFrame="#000000">
+    <defs>
+        <g id="pixso_custom_effect_0">
+            <effect visibility="visible" effectType="gaussianBlur" stdDeviation="2" />
+            <effect x="0.000000" y="4.000000" visibility="visible" fill="rgb(0,0,0)" fill-opacity="0.25" effectType="dropShadow" stdDeviation="4" radius="0" />
+        </g>
+        <filter id="filter_0" width="138.703613" height="97.924530" x="0.000000" y="3.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_0)" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feColorMatrix result="hardAlpha" in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.42857 0 " />
+            <feOffset dx="0.000000" dy="4.000000" in="hardAlpha" />
+            <feGaussianBlur stdDeviation="1.33333337" />
+            <feComposite k2="-1" k3="1" in2="hardAlpha" operator="out" />
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0 " />
+            <feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+            <feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+            <feGaussianBlur stdDeviation="0.666666687" result="effect_layerBlur_2" />
+        </filter>
+        <g id="pixso_custom_effect_1">
+            <effect visibility="visible" effectType="gaussianBlur" stdDeviation="5" />
+            <effect x="0.000000" y="4.000000" visibility="visible" fill="rgb(0,0,0)" fill-opacity="0.25" effectType="dropShadow" stdDeviation="4" radius="0" />
+        </g>
+        <filter id="filter_1" width="105.333252" height="103.924530" x="20.000000" y="0.000000" filterUnits="userSpaceOnUse" customEffect="url(#pixso_custom_effect_1)" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feOffset dx="0.000000" dy="4.000000" in="SourceAlpha" />
+            <feGaussianBlur stdDeviation="1.33333337" />
+            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0 " />
+            <feBlend result="effect_dropShadow_1" in2="BackgroundImageFix" mode="normal" />
+            <feBlend result="shape" in="SourceGraphic" in2="effect_dropShadow_1" mode="normal" />
+            <feGaussianBlur stdDeviation="1.66666663" result="effect_layerBlur_2" />
+        </filter>
+    </defs>
+    <rect id="Symbol 1" width="126.703613" height="85.924530" x="6.000000" y="5.000000" fill="rgb(255,255,255)" fill-opacity="0" />
+    <g filter="url(#filter_0)">
+        <path id="Эллипс 2" d="M21.4936 47.9623C21.4936 24.2349 42.7816 5 69.0418 5C81.9031 5 93.5702 9.6125 102.129 17.1083C116.59 22.2783 153.949 10.1368 116.59 47.9623C116.59 70.8443 95.3019 90.9245 69.0418 90.9245C56.1805 90.9245 44.5134 86.312 35.9542 78.8162C-16.3511 84.3868 14.2157 58.7029 21.4936 47.9623Z" fill="rgb(198,172,143)" fill-rule="evenodd" />
+        <path id="Эллипс 2" d="M102.129 17.1083C93.5702 9.6125 81.9031 5 69.0418 5C42.7816 5 21.4936 24.2349 21.4936 47.9623C20.3316 49.6771 18.576 51.7728 16.6588 54.0615C6.56768 66.1074 -8.00013 83.4974 35.9542 78.8162C44.5134 86.312 56.1805 90.9245 69.0418 90.9245C95.3019 90.9245 116.59 70.8443 116.59 47.9623C144.378 19.8268 130.827 19.3367 116.11 18.8044C111.041 18.6211 105.834 18.4327 102.129 17.1083ZM56.6215 7.50498Q62.6436 6 69.0418 6Q75.3565 6 81.3095 7.46754Q84.1195 8.16026 86.8489 9.17998Q92.7811 11.3963 97.7715 14.9393Q99.6906 16.3018 101.471 17.8606L101.614 17.9859L101.793 18.0499Q104.376 18.9734 108.51 19.3795Q110.939 19.6181 116.074 19.8038Q119.719 19.9356 121.427 20.0537Q124.233 20.2478 126.112 20.6103Q130.431 21.4432 131.386 23.4599Q133.977 28.9351 115.878 47.2596L115.59 47.5517L115.59 47.9623Q115.59 50.4809 115.248 52.9522Q114.475 58.5481 111.949 63.9018Q111.304 65.2694 110.563 66.583Q107.239 72.478 101.988 77.2867Q99.6378 79.4391 97.0447 81.2421Q92.4889 84.4098 87.1832 86.499Q83.4523 87.9681 79.5847 88.8072Q74.4344 89.9245 69.0418 89.9245Q62.7245 89.9245 56.7695 88.4559Q53.9618 87.7634 51.2347 86.7445Q45.3026 84.5283 40.3124 80.9854Q38.393 79.6228 36.613 78.0639L36.2836 77.7755L35.8483 77.8218Q20.4885 79.4576 13.2187 77.6468Q8.4081 76.4485 7.3205 73.7497Q7.10112 73.2054 7.03322 72.6Q6.68216 69.4705 10.0757 64.2118Q11.4425 62.0937 13.5727 59.3953Q14.8421 57.7873 17.4253 54.7036Q21.1309 50.2802 22.3214 48.5232L22.4936 48.2692L22.4936 47.9623Q22.4936 44.0876 23.2472 40.3655Q24.1504 35.9049 26.1359 31.6634Q26.9621 29.8982 27.9483 28.2275Q31.1675 22.7736 36.0906 18.3253Q37.8853 16.7037 39.8288 15.2859Q44.8612 11.6146 50.8909 9.31029Q53.7123 8.23202 56.6215 7.50498Z" fill="rgb(94,80,63)" fill-opacity="0.699999988" fill-rule="evenodd" />
+    </g>
+    <g filter="url(#filter_1)">
+        <ellipse id="Эллипс 3" rx="43.666664" ry="42.962265" cx="72.6666641" cy="47.962265" fill="rgb(234,224,213)" />
+    </g>
+    <path id="" d="M92.4053 65.5781L77.4639 65.5781L77.4639 63.542Q80.5254 63.542 81.7119 63.0586Q82.9131 62.5752 82.9131 61.623Q82.9131 61.1982 82.6201 60.3047Q81.6533 57.7852 80.7598 55.4121Q79.8662 53.0391 78.8994 50.6367L62.5225 50.6367Q61.7461 52.8047 61.0137 54.9727Q60.2959 57.126 59.5195 59.3379Q59.0361 60.6562 59.0361 61.3154Q59.0361 62.0332 59.4023 62.3994Q60.0029 63.542 64.3242 63.542L64.3242 65.5781L51.4775 65.5781L51.4775 63.542Q53.8213 63.542 54.9639 62.5752Q56.2236 61.5059 57.293 58.5029L69.3633 24.2988Q70.1982 23.874 70.9453 23.4932Q71.707 23.0977 72.4834 22.6729Q76.0869 32.0332 79.5293 41.1885Q82.9863 50.3438 86.5752 59.7041Q87.3662 61.7402 88.4355 62.6338Q89.6953 63.542 92.4053 63.542L92.4053 65.5781ZM78.1816 48.2344L70.5059 27.8438Q68.7041 32.9414 66.873 38.0391Q65.042 43.1367 63.2402 48.2344L78.1816 48.2344Z" fill="rgb(198,172,143)" fill-rule="nonzero" /></svg>
