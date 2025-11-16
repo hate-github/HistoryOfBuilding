@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История архитектурных зданий</title>
+    <link rel="stylesheet" href="/styles/StyleSheet.css">
+    <link rel="icon" type="image/svg" href="/images/favicon/favico.svg">
+</head>
+<body>
+    <!-- Header с навигацией -->
+    <<header>
+
+         <div class="nav-buttons">
+             <div class="nav-button" data-target="model1">
+                 <img src="/images/header/stonehenge-svgrepo-com.svg" alt="Неолит" class="nav-icon">
+                 <span class="nav-label">Неолит</span>
+             </div>
+             <div class="nav-button" data-target="model2">
+                 <img src="/images/header/pyramid-svgrepo-com.svg" alt="Бронзовый ве" class="nav-icon">
+                 <span class="nav-label">Бронзовый век</span>
+             </div>
+             <div class="nav-button" data-target="model3">
+                 <img src="/images/icons/baroque-icon.png" alt="Барокко" class="nav-icon">
+                 <span class="nav-label">Барокко</span>
+             </div>
+             <div class="nav-button" data-target="model4">
+                 <img src="/images/icons/modern-icon.png" alt="Модерн" class="nav-icon">
+                 <span class="nav-label">Модерн</span>
+             </div>
+             <div class="nav-button" data-target="model5">
+                 <img src="/images/icons/contemporary-icon.png" alt="Современность" class="nav-icon">
+                 <span class="nav-label">Современность</span>
+             </div>
+             
+         </div>
+         <div class="theme-toggle">
+             <button id="themeToggle" class="theme-btn" aria-label="Переключить тему">
+                 <span class="theme-icon">
+                     <img id="themeIcon" src="/images/header/sun.svg" alt="Тема" width="20" height="20" />
+                 </span>
+                 <span class="theme-text">Темная тема</span>
+             </button>
+         </div>
+    </header>
+
+    <!-- Секции с моделями -->
+    <section id="model1" class="model-section">
+        <div class="model-container" id="container1">
+            <!-- 3D модель и точки будут здесь -->
+        </div>
+        <div class="model-info-panel" id="info-panel1">
+            <!-- Контент будет заполняться динамически -->
+        </div>
+    </section>
+
+    <section id="model2" class="model-section">
+        <div class="model-container" id="container2">
+            <!-- 3D модель и точки будут здесь -->
+        </div>
+        <div class="model-info-panel" id="info-panel2">
+            <!-- Контент будет заполняться динамически -->
+        </div>
+    </section>
+
+    <section id="model3" class="model-section">
+        <div class="model-container" id="container3">
+            <!-- 3D модель и точки будут здесь -->
+        </div>
+        <div class="model-info-panel" id="info-panel3">
+            <!-- Контент будет заполняться динамически -->
+        </div>
+    </section>
+
+    <section id="model4" class="model-section">
+        <div class="model-container" id="container4">
+            <!-- 3D модель и точки будут здесь -->
+        </div>
+        <div class="model-info-panel" id="info-panel4">
+            <!-- Контент будет заполняться динамически -->
+        </div>
+    </section>
+
+    <section id="model5" class="model-section">
+        <div class="model-container" id="container5">
+            <!-- 3D модель и точки будут здесь -->
+        </div>
+        <div class="model-info-panel" id="info-panel5">
+            <!-- Контент будет заполняться динамически -->
+        </div>
+    </section>
+
+    <!-- Экран загрузки -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <h2 class="loading-title">Историческая справка</h2>
+            <p class="loading-text" id="loadingText">Загрузка информации...</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Индикатор прокрутки -->
+    <div class="scroll-progress" id="scrollProgress">
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+
+    <!-- Подсказка о прокрутке -->
+    <div class="scroll-hint" id="scrollHint">
+        Прокрутите 3 раза для перехода
+    </div>
+
+    <!-- Подключение библиотек -->
+    <script src="/js/fflate/index.min.js"></script><!--fflate для загрузки fbx-->
+
+    <script src="/js/tree_js_libs/build/three.min.js"></script><!--библиотека threejs для построение 3д сцены-->
+    <script src="/js/tree_js_libs/controls/OrbitControls.js"></script><!--библиотека threejs для возможности перемещения по сцене-->
+    <script src="/js/tree_js_libs/loaders/GLTFLoader.js"></script><!--библиотека threejs для GLTF моделей-->
+    <script src="/js/tree_js_libs/loaders/OBJLoader.js"></script><!--библиотека threejs для OBJ моделей-->
+    <script src="/js/tree_js_libs/loaders/FBXLoader.js"></script><!--библиотека threejs для FBX моделей-->
+    <script src="/js/tree_js_libs/loaders/STLLoader.js"></script><!--библиотека threejs для STL моделей-->
+    <script src="/js/tree_js_libs/loaders/3MFLoader.js"></script><!--библиотека threejs для 3MF моделей-->
+    <script src="/js/tree_js_libs/loaders/PLYLoader.js"></script><!--библиотека threejs для PLY моделей-->
+    <!-- Подключение модулей приложения -->
+    <script src="/js/Config.js"></script><!--Инициализация всех важных переменных для камеры, освещения и т.д.-->
+    <script src="/js/ModelLoader.js"></script><!--Загрузчик модели-->
+    <script src="/js/InteractionHandler.js"></script><!--Взаимодействие со сценой-->
+    <script src="/js/SceneHandler.js"></script><!--Настройка сцены-->
+    <script src="/js/UIManager.js"></script><!--Создание загрузчика экрана и информации по прокрутке-->
+    <script src="/js/SceneManager.js"></script><!--Вспомогательный модуль для SceneHandler-->
+    <script src="/js/main.js"></script><!--Основной файл загрузки-->
+    <script src="/js/ThemeManager.js"></script><!--изменение цветовых тем-->
+</body>
+</html>
