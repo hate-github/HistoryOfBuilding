@@ -6,55 +6,55 @@ document.addEventListener('DOMContentLoaded', function () {
     UIManager.init(); // Затем инициализируем UI
 
     // Инициализация обработчиков прокрутки и клавиатуры
-    initScrollHandlers();
+    //initScrollHandlers();
     initKeyboardHandlers();
 
     // Оптимизация: приостанавливаем рендеринг когда страница не видна
     setupVisibilityHandler();
 });
 
-function initScrollHandlers() {
-    let scrollCount = 0;
-    const scrollThreshold = Config.interaction.scrollThreshold;
-    let scrollTimeout;
-    let isScrolling = false;
+//function initScrollHandlers() {
+//    let scrollCount = 0;
+//    const scrollThreshold = Config.interaction.scrollThreshold;
+//    let scrollTimeout;
+//    let isScrolling = false;
 
-    window.addEventListener('wheel', function (e) {
-        if (isScrolling) return;
-        e.preventDefault();
+//    window.addEventListener('wheel', function (e) {
+//        if (isScrolling) return;
+//        e.preventDefault();
 
-        scrollCount += Math.abs(e.deltaY) > 0 ? 1 : 0;
-        UIManager.updateScrollProgress((scrollCount / scrollThreshold) * 100);
+//        scrollCount += Math.abs(e.deltaY) > 0 ? 1 : 0;
+//        UIManager.updateScrollProgress((scrollCount / scrollThreshold) * 100);
 
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            scrollCount = 0;
-            UIManager.updateScrollProgress(0);
-        }, 2000);
+//        clearTimeout(scrollTimeout);
+//        scrollTimeout = setTimeout(() => {
+//            scrollCount = 0;
+//            UIManager.updateScrollProgress(0);
+//        }, 2000);
 
-        if (scrollCount >= scrollThreshold) {
-            isScrolling = true;
+//        if (scrollCount >= scrollThreshold) {
+//            isScrolling = true;
 
-            let newIndex = window.sceneManager.currentSceneIndex;
-            if (e.deltaY > 0) {
-                newIndex = Math.min(newIndex + 1, Config.scenes.length - 1);
-            } else {
-                newIndex = Math.max(newIndex - 1, 0);
-            }
+//            let newIndex = window.sceneManager.currentSceneIndex;
+//            if (e.deltaY > 0) {
+//                newIndex = Math.min(newIndex + 1, Config.scenes.length - 1);
+//            } else {
+//                newIndex = Math.max(newIndex - 1, 0);
+//            }
 
-            if (newIndex !== window.sceneManager.currentSceneIndex) {
-                window.sceneManager.navigateToScene(newIndex);
-            }
+//            if (newIndex !== window.sceneManager.currentSceneIndex) {
+//                window.sceneManager.navigateToScene(newIndex);
+//            }
 
-            scrollCount = 0;
-            UIManager.updateScrollProgress(0);
+//            scrollCount = 0;
+//            UIManager.updateScrollProgress(0);
 
-            setTimeout(() => {
-                isScrolling = false;
-            }, 800);
-        }
-    }, { passive: false });
-}
+//            setTimeout(() => {
+//                isScrolling = false;
+//            }, 800);
+//        }
+//    }, { passive: false });
+//}
 
 function initKeyboardHandlers() {
     window.addEventListener('keydown', function (e) {

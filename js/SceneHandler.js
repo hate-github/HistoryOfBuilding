@@ -11,6 +11,15 @@ class SceneHandler {
         this.model = null;
         this.pointsGroup = null;
         this.interactivePoints = [];
+        this.skybox = null;
+
+        // Получаем конфигурацию skybox из Config
+        this.skyboxConfig = Config.getSkyboxConfig();
+        this.skyboxRadius = this.skyboxConfig.radius;
+
+        // Получаем конфигурацию границ для камеры
+        this.boundsConfig = Config.getCameraBounds();
+        this.cameraBoundRadius = this.boundsConfig.radius;
 
         this.initialCameraPosition = null;
         this.isInitialized = false;
@@ -28,6 +37,7 @@ class SceneHandler {
         this.createRenderer();
         this.createControls();
         this.setupLighting();
+        this.createSkybox();
 
         this.initialCameraPosition = {
             position: this.camera.position.clone(),
@@ -84,7 +94,10 @@ class SceneHandler {
         this.controls.dampingFactor = damping;
         this.controls.screenSpacePanning = false;
         this.controls.minDistance = minDistance;
-        this.controls.maxDistance = maxDistance;
+
+        // Ограничиваем максимальное расстояние радиусом skybox из конфигурации
+        this.controls.maxDistance = this.skyboxRadius * this.skyboxConfig.maxDistanceMultiplier;
+
         this.controls.zoomSpeed = zoomSpeed;
         this.controls.maxPolarAngle = Math.PI;
 
@@ -127,6 +140,94 @@ class SceneHandler {
         const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
         fillLight.position.set(-20, 10, -10);
         this.scene.add(fillLight);
+    }
+
+    //createCameraBounds() {
+    //    const geometryBounds = new THREE.SphereGeometry(
+    //        this.cameraBoundRadius,
+    //        this.boundsConfig.segments,
+    //        this.boundsConfig.segments
+    //    );
+
+    //    const material = new THREE.MeshBasicMaterial({
+    //        color: 0x022333B,
+    //        side: THREE.BackSide,
+    //        transparent: 0.0
+    //    })
+    //};
+
+
+    createSkybox() {
+        // Создаем geometry для skybox с радиусом из конфигурации
+        const geometry = new THREE.SphereGeometry(
+            this.skyboxRadius,
+            this.skyboxConfig.segments,
+            this.skyboxConfig.segments
+        );
+
+        // Изначальный материал - будет заменен при загрузке текстуры
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x22333B, // темный цвет по умолчанию
+            side: THREE.BackSide // Отображаем внутреннюю сторону сферы
+        });
+
+        this.skybox = new THREE.Mesh(geometry, material);
+        //this.skybox.position.set(0, -100, 0)
+        this.skybox.visible = false; // Изначально скрыт до загрузки текстуры
+        this.scene.add(this.skybox);
+    }
+
+    async loadSkyboxTexture(texture) {
+        if (!this.skybox) return;
+
+        try {
+            if (texture && texture.isTexture) {
+                // Если передана готовая текстура
+                this.skybox.material.map = texture;
+                this.skybox.material.color.set(0xFFFFFF); // Белый цвет для правильного отображения текстуры
+                this.skybox.material.needsUpdate = true;
+                this.skybox.visible = true;
+
+                // Убираем цветной фон сцены, теперь используем skybox
+                this.scene.background = null;
+
+                console.log(`Skybox loaded for scene ${this.index}`);
+            } else {
+                // Если текстура невалидна, скрываем skybox
+                this.skybox.visible = false;
+            }
+        } catch (error) {
+            console.error(`Failed to load skybox texture for scene ${this.index}:`, error);
+            this.skybox.visible = false;
+        }
+    }
+
+    setSkyboxVisibility(visible) {
+        if (this.skybox) {
+            this.skybox.visible = visible;
+        }
+    }
+
+    // Метод для принудительной проверки границ skybox
+    enforceSkyboxBounds() {
+        if (!this.camera || !this.controls || !this.skyboxRadius) return;
+
+        const cameraDistance = this.camera.position.length();
+        const maxAllowedDistance = this.cameraBoundRadius * this.boundsConfig.maxDistanceMultiplier;
+
+        if (cameraDistance > maxAllowedDistance) {
+            // Если камера вышла за пределы, возвращаем её обратно
+            const direction = this.camera.position.clone().normalize();
+            this.camera.position.copy(direction.multiplyScalar(maxAllowedDistance));
+            this.controls.update();
+        }
+       
+        const minY = -30;
+
+        if (this.camera.position.y < minY) {
+            this.camera.position.y = minY;
+            this.controls.update();
+        }
     }
 
     async loadModel() {
@@ -208,19 +309,26 @@ class SceneHandler {
         const maxDim = Math.max(size.x, size.y, size.z);
 
         // Автоматическая настройка камеры в зависимости от размера модели
-        const cameraDistance = Math.max((maxDim -300) * 0.5, 10);
+        const cameraDistance = Math.max((maxDim - 300) * 0.5, 10);
+
+        // Ограничиваем расстояние камеры радиусом skybox
+        const limitedCameraDistance = Math.min(cameraDistance, this.skyboxRadius * 0.9);
 
         // Плавное перемещение камеры к новой позиции
         if (this.initialCameraPosition) {
-            const adaptivePosition = this.initialCameraPosition.position.clone().normalize().multiplyScalar(cameraDistance);
+            const adaptivePosition = this.initialCameraPosition.position.clone().normalize().multiplyScalar(limitedCameraDistance);
             this.camera.position.copy(adaptivePosition);
         } else {
-            this.camera.position.set(cameraDistance, cameraDistance * 0.3, cameraDistance);
+            this.camera.position.set(limitedCameraDistance, limitedCameraDistance * 0.3, limitedCameraDistance);
         }
 
-        // Настраиваем контролы с учетом размера модели
+        // Настраиваем контролы с учетом размера модели и ограничения skybox
         this.controls.minDistance = Math.max(maxDim * 0.2, 1);
-        this.controls.maxDistance = Math.max(maxDim * 8, 100);
+
+        // Ограничиваем максимальное расстояние радиусом skybox
+        const modelBasedMaxDistance = Math.max(maxDim * 8, 100);
+        this.controls.maxDistance = Math.min(modelBasedMaxDistance, this.skyboxRadius * this.skyboxConfig.maxDistanceMultiplier);
+
         this.controls.target.set(0, 0, 0);
         this.controls.update();
 
@@ -364,7 +472,10 @@ class SceneHandler {
         const maxDim = Math.max(size.x, size.y, size.z);
 
         this.controls.minDistance = Math.max(maxDim * 0.1, 0.5);
-        this.controls.maxDistance = Math.max(maxDim * 10, 50);
+
+        // Ограничиваем максимальное расстояние радиусом skybox
+        const modelBasedMaxDistance = Math.max(maxDim * 10, 50);
+        this.controls.maxDistance = Math.min(modelBasedMaxDistance, this.skyboxRadius * this.skyboxConfig.maxDistanceMultiplier);
     }
 
     // Активация/деактивация сцены
@@ -394,6 +505,10 @@ class SceneHandler {
 
             this.updatePointsPosition();
             this.controls.update();
+
+            // Проверяем границы skybox каждый кадр
+            this.enforceSkyboxBounds();
+
             this.renderer.render(this.scene, this.camera);
 
             this.animationId = requestAnimationFrame(animate);
@@ -438,6 +553,17 @@ class SceneHandler {
 
         if (this.model) {
             ModelLoader.cleanupModel(this.model);
+        }
+
+        // Очищаем skybox
+        if (this.skybox) {
+            if (this.skybox.material.map) {
+                this.skybox.material.map.dispose();
+            }
+            this.skybox.material.dispose();
+            this.skybox.geometry.dispose();
+            this.scene.remove(this.skybox);
+            this.skybox = null;
         }
 
         if (this.renderer) {

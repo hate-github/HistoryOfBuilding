@@ -3,6 +3,7 @@ class UIManager {
     static init() {
         this.setupNavigation();
         this.setupGlobalCloseHandlers();
+        this.currentTypingAnimation = null; // Для хранения текущей анимации
     }
 
     static setupNavigation() {
@@ -47,32 +48,125 @@ class UIManager {
         if (!loadingScreen || !loadingText) return;
 
         const randomFact = Config.historicalFacts[Math.floor(Math.random() * Config.historicalFacts.length)];
-        loadingText.textContent = randomFact;
+
+        // Анимируем текст загрузки
+        this.typeText(loadingText, randomFact, 30, () => {
+            // После завершения печати можно добавить дополнительную логику
+        });
+
         loadingScreen.classList.add('active');
     }
 
     static hideLoadingScreen() {
         const loadingScreen = document.getElementById('loadingScreen');
         if (loadingScreen) {
+            // Останавливаем текущую анимацию если есть
+            if (this.currentTypingAnimation) {
+                clearTimeout(this.currentTypingAnimation);
+                this.currentTypingAnimation = null;
+            }
             loadingScreen.classList.remove('active');
         }
     }
 
-    static updateScrollProgress(progress) {
-        const progressBar = document.getElementById('scrollProgressBar');
-        const progressContainer = document.getElementById('scrollProgress');
-        const scrollHint = document.getElementById('scrollHint');
+    // Метод для анимации печатающегося текста
+    static typeText(element, text, speed = 50, callback = null) {
+        // Останавливаем предыдущую анимацию
+        if (this.currentTypingAnimation) {
+            clearTimeout(this.currentTypingAnimation);
+            this.currentTypingAnimation = null;
+        }
 
-        if (progressBar && progressContainer) {
-            progressBar.style.width = `${progress}%`;
+        let index = 0;
+        element.textContent = ''; // Очищаем элемент
 
-            if (progress > 0) {
-                progressContainer.classList.add('active');
-                if (scrollHint) scrollHint.classList.add('active');
+        // Функция для добавления следующего символа
+        const typeNextChar = () => {
+            if (index < text.length) {
+                // Добавляем следующий символ
+                element.textContent += text.charAt(index);
+                index++;
+
+                // Продолжаем анимацию
+                this.currentTypingAnimation = setTimeout(typeNextChar, speed);
             } else {
-                progressContainer.classList.remove('active');
-                if (scrollHint) scrollHint.classList.remove('active');
+                // Анимация завершена
+                this.currentTypingAnimation = null;
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
             }
+        };
+
+        // Запускаем анимацию
+        typeNextChar();
+    }
+
+    // Метод для быстрого завершения текущей анимации
+    static completeTyping() {
+        if (this.currentTypingAnimation) {
+            clearTimeout(this.currentTypingAnimation);
+            this.currentTypingAnimation = null;
         }
     }
+
+    // Метод для анимации текста в информационной панели
+    static animateInfoPanelText(panelElement, title, content) {
+        const titleElement = panelElement.querySelector('h3');
+        const contentElement = panelElement.querySelector('p');
+
+        if (!titleElement || !contentElement) return;
+
+        // Очищаем содержимое
+        titleElement.textContent = '';
+        contentElement.textContent = '';
+
+        // Анимируем заголовок быстро
+        this.typeText(titleElement, title, 30, () => {
+            // После завершения заголовка анимируем контент
+            this.typeText(contentElement, content, 20);
+        });
+    }
+
+    // Альтернативный метод с эффектом курсора
+    static typeTextWithCursor(element, text, speed = 50, callback = null) {
+        if (this.currentTypingAnimation) {
+            clearTimeout(this.currentTypingAnimation);
+            this.currentTypingAnimation = null;
+        }
+
+        let index = 0;
+        element.textContent = '';
+        element.classList.add('typing-cursor'); // Добавляем класс для курсора
+
+        const typeNextChar = () => {
+            if (index < text.length) {
+                element.textContent = text.substring(0, index + 1);
+                index++;
+
+                this.currentTypingAnimation = setTimeout(typeNextChar, speed);
+            } else {
+                element.classList.remove('typing-cursor'); // Убираем курсор
+                this.currentTypingAnimation = null;
+                if (callback && typeof callback === 'function') {
+                    callback();
+                }
+            }
+        };
+
+        typeNextChar();
+    }
 }
+
+// Добавьте этот CSS в ваш файл стилей для эффекта курсора:
+/*
+.typing-cursor::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+*/

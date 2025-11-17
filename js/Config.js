@@ -183,6 +183,18 @@ const Config = {
                 position: { x: 50, y: 50, z: 25 },
                 shadowCameraFar: 5000
             }
+        },
+        // ДОБАВЛЕНО: Конфигурация skybox
+        skybox: {
+            radius: 3000, // Радиус сферы skybox
+            segments: 16, // Количество сегментов для сглаживания
+            maxDistanceMultiplier: 0.95 // Множитель для ограничения максимального расстояния камеры (95% от радиуса)
+        },
+
+        cameraBounds: {
+            radius: 800,
+            segments: 16,
+            maxDistanceMultiplier: 0.90
         }
     },
 
@@ -206,4 +218,15 @@ Config.getPointsForScene = (sceneIndex) => {
         return Config.scenes[sceneIndex].points;
     }
     return [];
+};
+
+// Получение конфигурации skybox
+Config.getSkyboxConfig = () => {
+    return Config.threeJS.skybox || { radius: 500, segments: 32, maxDistanceMultiplier: 0.95 };
+};
+
+
+// Получение конфигурации cameraBounds
+Config.getCameraBounds = () => {
+    return Config.threeJS.cameraBounds || { radius: 800, segments: 24,  maxDistanceMultiplier: 0.90 };
 };

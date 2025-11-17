@@ -27,8 +27,15 @@
     --scene-bg: #C6AC8F;
 }
 
-/* Основные стили */
-* {
+@font-face {
+    font-family: 'JejuHyedju';
+    src: url('/fonts/JejuMyeongjo.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; /* Для производительности */
+}
+    /* Основные стили */
+    * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -591,6 +598,37 @@ body {
         font-size: 12px;
     }
 }
+.headerDIV {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center; /* Добавьте это */
+}
+.site-logo {
+    display: flex;
+    width: fit-content;
+    height: auto;
+    background-color: white;
+    border-radius: 50px;
+    border: solid 3px #C6AC8F;
+}
+.logo {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content:center;
+    align-items: center;
+    width:fit-content;
+    height:fit-content;
+}
+    .logo img {
+        width: 25%;
+        height: 25%;
+    }
+    .logo p {
+        color: #C6AC8F;
+        font-family: JejuHyedju;
+        font-size: 24px;
+    }
 
 @media (max-width: 480px) {
     .nav-buttons {
@@ -610,4 +648,24 @@ body {
     .nav-label {
         font-size: 8px;
     }
+}
+.typing-animation {
+    border-right: 2px solid;
+    animation: typing 0.5s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        border-right-color: currentColor;
+    }
+
+    to {
+        border-right-color: transparent;
+    }
+}
+
+/* Для многострочного текста */
+.panel-description.typing-animation {
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
