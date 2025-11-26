@@ -201,7 +201,7 @@ const Config = {
     interaction: {
         scrollThreshold: 3,
         pointSize: 6,
-        pointColor: 0xff0000,
+        pointColor: 0x00ff00,
         highlightColor: 0x00ff00
     }
 };

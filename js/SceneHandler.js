@@ -11,6 +11,7 @@ class SceneHandler {
         this.model = null;
         this.pointsGroup = null;
         this.interactivePoints = [];
+        this.blinkingPoints = []; // Добавлен массив для мигающих точек
         this.skybox = null;
 
         // Получаем конфигурацию skybox из Config
@@ -142,21 +143,6 @@ class SceneHandler {
         this.scene.add(fillLight);
     }
 
-    //createCameraBounds() {
-    //    const geometryBounds = new THREE.SphereGeometry(
-    //        this.cameraBoundRadius,
-    //        this.boundsConfig.segments,
-    //        this.boundsConfig.segments
-    //    );
-
-    //    const material = new THREE.MeshBasicMaterial({
-    //        color: 0x022333B,
-    //        side: THREE.BackSide,
-    //        transparent: 0.0
-    //    })
-    //};
-
-
     createSkybox() {
         // Создаем geometry для skybox с радиусом из конфигурации
         const geometry = new THREE.SphereGeometry(
@@ -172,7 +158,6 @@ class SceneHandler {
         });
 
         this.skybox = new THREE.Mesh(geometry, material);
-        //this.skybox.position.set(0, -100, 0)
         this.skybox.visible = false; // Изначально скрыт до загрузки текстуры
         this.scene.add(this.skybox);
     }
@@ -221,7 +206,7 @@ class SceneHandler {
             this.camera.position.copy(direction.multiplyScalar(maxAllowedDistance));
             this.controls.update();
         }
-       
+
         const minY = -30;
 
         if (this.camera.position.y < minY) {
@@ -368,6 +353,7 @@ class SceneHandler {
 
         // Clear interactive points array
         this.interactivePoints = [];
+        this.blinkingPoints = []; // Очищаем массив мигающих точек
 
         // Get points configuration for this specific scene
         const scenePoints = Config.getPointsForScene(this.index);
@@ -421,15 +407,127 @@ class SceneHandler {
                 isPoint: true,
                 pointIndex: pointIndex,
                 sceneIndex: this.index,
-                originalColor: Config.interaction.pointColor
+                originalColor: Config.interaction.pointColor,
+                isBlinking: true,
+                blinkPhase: Math.random() * Math.PI * 2, // Случайная начальная фаза для разнообразия
+                blinkSpeed: 0.08 // Скорость мигания
             };
 
             pointMesh.frustumCulled = false;
+
+            // Добавляем в массив мигающих точек для анимации
+            this.blinkingPoints.push(pointMesh);
+
+            // Создаем эффект свечения для мигания
+            this.createBlinkEffect(pointConfig, pointIndex, pointMesh);
 
             return pointMesh;
         } catch (error) {
             console.error(`Error creating interactive point ${pointIndex} for scene ${this.index}:`, error);
             return null;
+        }
+    }
+
+    createBlinkEffect(pointConfig, pointIndex, mainPointMesh) {
+        try {
+            const { position } = pointConfig;
+
+            const geometry = new THREE.SphereGeometry(Config.interaction.pointSize * 1.8, 16, 16);
+            const material = new THREE.MeshBasicMaterial({
+                color: Config.interaction.pointColor,
+                transparent: true,
+                opacity: 0.3,
+                depthTest: false,
+                wireframe: false
+            });
+
+            const glowMesh = new THREE.Mesh(geometry, material);
+
+            glowMesh.position.set(
+                position.x,
+                position.y,
+                position.z
+            );
+
+            glowMesh.userData = {
+                isGlow: true,
+                parentPoint: mainPointMesh,
+                blinkPhase: Math.random() * Math.PI * 2,
+                blinkSpeed: 0.06
+            };
+
+            glowMesh.frustumCulled = false;
+
+            // Добавляем в сцену и массив мигающих точек
+            this.pointsGroup.add(glowMesh);
+            this.blinkingPoints.push(glowMesh);
+
+            return glowMesh;
+        } catch (error) {
+            console.error(`Error creating blink effect for point ${pointIndex}:`, error);
+            return null;
+        }
+    }
+
+    // Метод для обновления анимации мигания
+    updateBlinkingAnimation() {
+        if (!this.blinkingPoints || this.blinkingPoints.length === 0) return;
+
+        this.blinkingPoints.forEach(point => {
+            if (point.userData.isBlinking !== false) {
+                if (point.userData.isGlow) {
+                    // Анимация эффекта свечения
+                    point.userData.blinkPhase += point.userData.blinkSpeed;
+                    const pulse = Math.sin(point.userData.blinkPhase) * 0.5 + 0.5;
+
+                    // Анимируем прозрачность и масштаб для свечения
+                    point.material.opacity = 0.1 + pulse * 0.3;
+                    const scale = 0.8 + pulse * 0.4;
+                    point.scale.set(scale, scale, scale);
+
+                } else {
+                    // Анимация основной точки
+                    point.userData.blinkPhase += point.userData.blinkSpeed;
+                    const pulse = Math.sin(point.userData.blinkPhase) * 0.3 + 0.7;
+
+                    // Анимируем прозрачность и небольшое изменение масштаба
+                    point.material.opacity = 0.6 + pulse * 0.3;
+                    const scale = 0.9 + pulse * 0.2;
+                    point.scale.set(scale, scale, scale);
+                }
+            }
+        });
+    }
+
+    // Методы для управления миганием
+    setPointBlinking(pointIndex, shouldBlink) {
+        const point = this.interactivePoints[pointIndex];
+        if (point) {
+            point.userData.isBlinking = shouldBlink;
+
+            // Сбрасываем в исходное состояние при остановке мигания
+            if (!shouldBlink) {
+                point.material.opacity = 0.9;
+                point.scale.set(1, 1, 1);
+            }
+        }
+    }
+
+    stopAllBlinking() {
+        if (this.blinkingPoints) {
+            this.blinkingPoints.forEach(point => {
+                point.userData.isBlinking = false;
+                point.material.opacity = point.userData.isGlow ? 0.3 : 0.9;
+                point.scale.set(1, 1, 1);
+            });
+        }
+    }
+
+    startAllBlinking() {
+        if (this.blinkingPoints) {
+            this.blinkingPoints.forEach(point => {
+                point.userData.isBlinking = true;
+            });
         }
     }
 
@@ -504,6 +602,7 @@ class SceneHandler {
             if (!this.isActive) return;
 
             this.updatePointsPosition();
+            this.updateBlinkingAnimation(); // Добавлен вызов анимации мигания
             this.controls.update();
 
             // Проверяем границы skybox каждый кадр
@@ -521,15 +620,6 @@ class SceneHandler {
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
-        }
-    }
-
-    animate() {
-        // Deprecated - используем startRendering вместо этого
-        if (this.isActive) {
-            this.updatePointsPosition();
-            this.controls.update();
-            this.renderer.render(this.scene, this.camera);
         }
     }
 
@@ -554,6 +644,9 @@ class SceneHandler {
         if (this.model) {
             ModelLoader.cleanupModel(this.model);
         }
+
+        // Очищаем мигающие точки
+        this.blinkingPoints = [];
 
         // Очищаем skybox
         if (this.skybox) {
